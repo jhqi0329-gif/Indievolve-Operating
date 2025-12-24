@@ -1,0 +1,589 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>绩效计算器（1-5分 → 标准化100分）</title>
+  <style>
+    :root {
+      --bg:#0b1020; --card:#121a33; --muted:#9fb0d0; --text:#eaf0ff;
+      --line:rgba(255,255,255,.12); --accent:#7aa2ff; --good:#34d399; --bad:#fb7185;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:linear-gradient(180deg,#070a14, var(--bg));color:var(--text);
+      font-family: ui-sans-serif, system-ui, -apple-system, "PingFang SC","Microsoft YaHei", Arial;}
+    .wrap{max-width:1100px;margin:0 auto;padding:24px 16px 60px;}
+    h1{font-size:22px;margin:0 0 6px;}
+    .sub{color:var(--muted);font-size:13px;margin:0 0 16px;line-height:1.5}
+    .grid{display:grid;grid-template-columns:1fr;gap:14px}
+    @media(min-width:900px){.grid{grid-template-columns:1fr 1fr}}
+    .card{background:rgba(18,26,51,.85);border:1px solid var(--line);
+      border-radius:16px;padding:16px;backdrop-filter: blur(8px);}
+    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
+    label{display:block;font-size:12px;color:var(--muted);margin:0 0 6px}
+    input, select, textarea {
+      width: 100%; padding:10px 12px; border-radius:12px;
+      border:1px solid rgba(255,255,255,.16); background:rgba(0,0,0,.25); color:var(--text);
+      outline:none;
+    }
+    textarea{min-height:88px;resize:vertical}
+    input:focus, select:focus, textarea:focus{border-color:rgba(122,162,255,.6);box-shadow:0 0 0 3px rgba(122,162,255,.18);}
+    .col{flex:1;min-width:190px}
+    .col.small{min-width:140px;max-width:220px}
+    .pill{display:inline-flex;gap:8px;align-items:center;padding:6px 10px;border:1px solid var(--line);
+      border-radius:999px;background:rgba(0,0,0,.15);font-size:12px;color:var(--muted)}
+    .scorebox{display:flex;justify-content:space-between;gap:12px;align-items:center}
+    .big{font-size:34px;font-weight:700;letter-spacing:.2px}
+    .big small{font-size:13px;color:var(--muted);font-weight:500;margin-left:8px}
+    .btnbar{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+    button{cursor:pointer;border:none;border-radius:12px;padding:10px 12px;font-weight:700}
+    .btn{background:var(--accent);color:#071022}
+    .btn.ghost{background:transparent;color:var(--text);border:1px solid rgba(255,255,255,.18)}
+    .btn:disabled{opacity:.45;cursor:not-allowed}
+    table{width:100%;border-collapse:collapse}
+    th,td{padding:10px;border-bottom:1px solid rgba(255,255,255,.10);vertical-align:top}
+    th{text-align:left;font-size:12px;color:var(--muted);font-weight:700}
+    td{font-size:13px}
+    .dim-name{font-weight:700}
+    .dim-desc{color:var(--muted);font-size:12px;margin-top:4px;line-height:1.35}
+    .warn{color:#ffd18b;font-size:12px;margin-top:8px;display:none}
+    .ok{color:var(--good)}
+    .bad{color:var(--bad)}
+    .footer{margin-top:12px;color:var(--muted);font-size:12px;line-height:1.55}
+    .kpi{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+    .kpi .pill strong{color:var(--text)}
+    .divider{height:1px;background:rgba(255,255,255,.10);margin:10px 0}
+    .tag{font-size:11px;color:var(--muted);border:1px solid var(--line);padding:3px 8px;border-radius:999px;}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>绩效计算器（每项1–5分 → 标准化100分）</h1>
+    <p class="sub">
+      支持：实习生（DM/导师单人考核）与全职员工（DM 60% + CEO 40% 双考核）；
+      结果/行为/AI协同化 模块权重分别为 50% / 30% / 20%。
+    </p>
+
+    <div class="grid">
+      <div class="card">
+        <div class="row">
+          <div class="col">
+            <label>被评估人姓名</label>
+            <input id="empName" placeholder="例如：张三" />
+          </div>
+          <div class="col small">
+            <label>员工类型</label>
+            <select id="role">
+              <option value="intern">实习生</option>
+              <option value="fulltime">全职员工</option>
+            </select>
+          </div>
+          <div class="col">
+            <label>考核周期</label>
+            <input id="period" placeholder="例如：2025-12（或 2025Q4）" />
+          </div>
+          <div class="col small">
+            <label>部门/团队</label>
+            <input id="dept" placeholder="例如：增长" />
+          </div>
+        </div>
+
+        <div class="row" style="margin-top:10px">
+          <div class="col">
+            <label>岗位/职能</label>
+            <input id="title" placeholder="例如：运营实习生 / 产品经理" />
+          </div>
+          <div class="col">
+            <label>归档编号（可选）</label>
+            <input id="archiveId" placeholder="例如：HR-2025-12-001" />
+          </div>
+          <div class="col">
+            <label>备注（可选）</label>
+            <input id="note" placeholder="例如：试用期第2个月 / 项目A" />
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="scorebox">
+          <div>
+            <div class="pill">最终得分 <span class="tag">0–100</span></div>
+            <div class="big"><span id="finalScore">—</span><small id="finalHint"></small></div>
+            <div class="kpi" id="kpis"></div>
+          </div>
+          <div style="min-width:280px">
+            <div class="pill">导出归档</div>
+            <div class="btnbar">
+              <button class="btn" id="btnPdf" disabled>下载PDF归档</button>
+              <button class="btn ghost" id="btnDoc" disabled>下载Word归档(.doc)</button>
+              <button class="btn ghost" id="btnReset">重置</button>
+            </div>
+            <div class="warn" id="warn">请先把所有评分项都填完（1–5分）后再导出。</div>
+          </div>
+        </div>
+
+        <div class="footer">
+          评分说明：每个维度按 1–5 分打分；系统按文档定义的权重自动汇总，并线性标准化到 100 分。<br/>
+          全职员工：先分别计算 DM 与 CEO 的 0–100 分，再按 60% / 40% 汇总为最终得分。
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="pill">打分面板</div>
+        <p class="sub" style="margin-top:10px">
+          你可以为每位考核人分别打分并填写简短评语；导出的归档文档会包含：员工信息、各模块/维度评分、加权得分、评语与生成时间。
+        </p>
+        <div id="panels"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- PDF libs (CDN) -->
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.2/dist/jspdf.plugin.autotable.min.js"></script>
+
+  <script>
+    const RUBRIC = {"modules": [{"key": "results", "name": "结果", "weight": 0.5, "dims": [{"key": "deliver", "name": "结果（做没做成）", "desc": "是否交付", "weight": 0.4}, {"key": "timeliness", "name": "时效（快不快）", "desc": "是否按期", "weight": 0.3}, {"key": "quality", "name": "质量（好不好）", "desc": "是否达标", "weight": 0.3}]}, {"key": "behavior", "name": "行为", "weight": 0.3, "dims": [{"key": "professional", "name": "专业能力", "desc": "是否胜任岗位要求", "weight": 0.2}, {"key": "execution", "name": "执行力", "desc": "是否按计划推进", "weight": 0.2}, {"key": "initiative", "name": "主动性", "desc": "是否主动发现/沟通并解决问题", "weight": 0.3}, {"key": "communication", "name": "沟通度", "desc": "远程工作环境的沟通效率", "weight": 0.3}]}, {"key": "ai", "name": "AI协同化", "weight": 0.2, "dims": [{"key": "ai_depth", "name": "AI工具应用深度", "desc": "日常工作中选择、配置和使用AI工具的能力和程度", "weight": 0.5}, {"key": "ai_impact", "name": "利用AI的效率提升贡献", "desc": "通过AI协同手段带来的实际工作效率提升（任务完成时间缩短、错误率降低、产出质量提升）", "weight": 0.5}]}], "roleWeights": {"intern": {"label": "实习生", "evaluators": [{"key": "mentor", "label": "DM/导师", "weight": 1.0}]}, "fulltime": {"label": "全职员工", "evaluators": [{"key": "dm", "label": "DM", "weight": 0.6}, {"key": "ceo", "label": "CEO", "weight": 0.4}]}}};
+
+    const el = (id) => document.getElementById(id);
+    const roleEl = el("role");
+    const panelsEl = el("panels");
+    const finalScoreEl = el("finalScore");
+    const finalHintEl = el("finalHint");
+    const warnEl = el("warn");
+    const kpisEl = el("kpis");
+    const btnPdf = el("btnPdf");
+    const btnDoc = el("btnDoc");
+    const btnReset = el("btnReset");
+
+    function clamp(n, min, max) { return Math.max(min, Math.min(max, n)); }
+
+    function scoreToHint(s) {
+      if (s === null) return "";
+      if (s >= 90) return "优秀";
+      if (s >= 80) return "良好";
+      if (s >= 70) return "合格";
+      return "需提升";
+    }
+
+    function buildPanels() {
+      panelsEl.innerHTML = "";
+      const role = roleEl.value;
+      const evals = RUBRIC.roleWeights[role].evaluators;
+
+      evals.forEach(ev => {
+        const card = document.createElement("div");
+        card.className = "card";
+        card.style.marginTop = "12px";
+
+        const title = document.createElement("div");
+        title.className = "row";
+        title.innerHTML = `
+          <div class="col"><div class="pill"><strong>${ev.label}</strong> 评分 <span class="tag">权重 ${Math.round(ev.weight*100)}%</span></div></div>
+          <div class="col"><label>考核人姓名（可选）</label><input id="e_${ev.key}_name" placeholder="例如：李四"/></div>
+        `;
+        card.appendChild(title);
+
+        const table = document.createElement("table");
+        table.innerHTML = `
+          <thead>
+            <tr>
+              <th style="width:34%">维度</th>
+              <th style="width:12%">权重</th>
+              <th style="width:18%">评分（1–5）</th>
+              <th>评语（可选）</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        `;
+
+        const tbody = table.querySelector("tbody");
+
+        RUBRIC.modules.forEach(m => {
+          // module header row
+          const trH = document.createElement("tr");
+          trH.innerHTML = `
+            <td colspan="4">
+              <div class="row" style="align-items:center;justify-content:space-between">
+                <div>
+                  <span class="dim-name">${m.name}</span>
+                  <span class="tag">模块权重 ${Math.round(m.weight*100)}%</span>
+                </div>
+                <div class="pill">模块得分：<strong id="m_${ev.key}_${m.key}">—</strong></div>
+              </div>
+            </td>
+          `;
+          tbody.appendChild(trH);
+
+          m.dims.forEach(d => {
+            const tr = document.createElement("tr");
+            const selId = `s_${ev.key}_${m.key}_${d.key}`;
+            const cmtId = `c_${ev.key}_${m.key}_${d.key}`;
+            tr.innerHTML = `
+              <td>
+                <div class="dim-name">${d.name}</div>
+                <div class="dim-desc">${d.desc}</div>
+              </td>
+              <td>${Math.round(d.weight*100)}%</td>
+              <td>
+                <select id="${selId}" data-ev="${ev.key}" data-m="${m.key}" data-d="${d.key}">
+                  <option value="">请选择</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                </select>
+              </td>
+              <td><input id="${cmtId}" placeholder="可填写具体表现/例子"/></td>
+            `;
+            tbody.appendChild(tr);
+          });
+        });
+
+        card.appendChild(table);
+
+        // evaluator overall comment
+        const extra = document.createElement("div");
+        extra.style.marginTop = "10px";
+        extra.innerHTML = `
+          <label>${ev.label} 总评（可选）</label>
+          <textarea id="e_${ev.key}_overall" placeholder="一句话总结、亮点、改进建议等"></textarea>
+          <div class="row" style="margin-top:10px;align-items:center;justify-content:space-between">
+            <div class="pill">${ev.label} 总分：<strong id="e_${ev.key}_score">—</strong> / 100</div>
+            <div class="tag">自动计算</div>
+          </div>
+        `;
+        card.appendChild(extra);
+
+        panelsEl.appendChild(card);
+      });
+
+      // attach listeners
+      panelsEl.querySelectorAll("select").forEach(s => s.addEventListener("change", recalcAll));
+      panelsEl.querySelectorAll("input, textarea").forEach(i => i.addEventListener("input", () => {
+        // do nothing, but keep export enabled if scores already valid
+      }));
+      recalcAll();
+    }
+
+    function getEvaluatorScores() {
+      const role = roleEl.value;
+      const evals = RUBRIC.roleWeights[role].evaluators;
+      const out = [];
+      for (const ev of evals) {
+        let allFilled = true;
+        let total = 0; // 0-1
+        const moduleScores = {};
+
+        for (const m of RUBRIC.modules) {
+          let mSum = 0; // 0-1 within module
+          for (const d of m.dims) {
+            const sel = document.getElementById(`s_${ev.key}_${m.key}_${d.key}`);
+            const v = sel ? parseFloat(sel.value) : NaN;
+            if (!Number.isFinite(v)) allFilled = false;
+            const frac = Number.isFinite(v) ? (clamp(v,1,5)/5) : 0;
+            mSum += frac * d.weight;
+          }
+          moduleScores[m.key] = mSum; // 0-1
+          total += mSum * m.weight;
+        }
+
+        out.push({
+          key: ev.key,
+          label: ev.label,
+          weight: ev.weight,
+          allFilled,
+          total01: total,
+          total100: Math.round(total*1000)/10, // 1 decimal
+          moduleScores
+        });
+      }
+      return out;
+    }
+
+    function recalcAll() {
+      const evalScores = getEvaluatorScores();
+
+      // update per-module & per-evaluator display
+      evalScores.forEach(ev => {
+        RUBRIC.modules.forEach(m => {
+          const v = ev.moduleScores[m.key];
+          const show = document.getElementById(`m_${ev.key}_${m.key}`);
+          if (show) show.textContent = ev.allFilled ? (Math.round(v*1000)/10).toFixed(1) + " / 100(模块)" : "—";
+          // Note: display is normalized to 100 for readability
+          if (show && ev.allFilled) {
+            const normalized = v*100;
+            show.textContent = normalized.toFixed(1) + " / 100";
+          }
+        });
+        const eScore = document.getElementById(`e_${ev.key}_score`);
+        if (eScore) eScore.textContent = ev.allFilled ? ev.total100.toFixed(1) : "—";
+      });
+
+      // overall final
+      const allFilled = evalScores.every(e => e.allFilled);
+      if (!allFilled) {
+        finalScoreEl.textContent = "—";
+        finalHintEl.textContent = "";
+        warnEl.style.display = "block";
+        btnPdf.disabled = true;
+        btnDoc.disabled = true;
+        kpisEl.innerHTML = "";
+        return;
+      }
+
+      warnEl.style.display = "none";
+      btnPdf.disabled = false;
+      btnDoc.disabled = false;
+
+      let final = 0;
+      evalScores.forEach(e => final += e.total01 * e.weight);
+      const final100 = Math.round(final*1000)/10;
+
+      finalScoreEl.textContent = final100.toFixed(1);
+      finalHintEl.textContent = "· " + scoreToHint(final100);
+
+      // KPI pills
+      kpisEl.innerHTML = "";
+      evalScores.forEach(e => {
+        const p = document.createElement("div");
+        p.className = "pill";
+        p.innerHTML = `<strong>${e.label}</strong>：${e.total100.toFixed(1)}`;
+        kpisEl.appendChild(p);
+      });
+    }
+
+    function collectData() {
+      const role = roleEl.value;
+      const emp = {
+        name: el("empName").value.trim(),
+        role: RUBRIC.roleWeights[role].label,
+        period: el("period").value.trim(),
+        dept: el("dept").value.trim(),
+        title: el("title").value.trim(),
+        archiveId: el("archiveId").value.trim(),
+        note: el("note").value.trim(),
+      };
+
+      const evals = RUBRIC.roleWeights[role].evaluators.map(ev => {
+        const evName = (document.getElementById(`e_${ev.key}_name`)?.value || "").trim();
+        const overall = (document.getElementById(`e_${ev.key}_overall`)?.value || "").trim();
+        const modules = RUBRIC.modules.map(m => {
+          const dims = m.dims.map(d => {
+            const score = document.getElementById(`s_${ev.key}_${m.key}_${d.key}`)?.value || "";
+            const cmt = (document.getElementById(`c_${ev.key}_${m.key}_${d.key}`)?.value || "").trim();
+            return {
+              name: d.name,
+              desc: d.desc,
+              weight: d.weight,
+              score: score ? Number(score) : null,
+              comment: cmt
+            };
+          });
+          return {
+            name: m.name,
+            weight: m.weight,
+            dims
+          };
+        });
+        return {
+          key: ev.key,
+          label: ev.label,
+          weight: ev.weight,
+          evaluatorName: evName,
+          overallComment: overall,
+          modules
+        };
+      });
+
+      // compute final
+      const evalScores = getEvaluatorScores();
+      const final01 = evalScores.reduce((acc, e) => acc + e.total01 * e.weight, 0);
+      const final100 = Math.round(final01*1000)/10;
+
+      const createdAt = new Date().toISOString();
+      return { emp, evals, final100, createdAt };
+    }
+
+    function buildFileBaseName(empName, period) {
+      const safeName = (empName || "未命名").replace(/\s+/g,"").slice(0,24);
+      const safePeriod = (period || "周期未填").replace(/\s+/g,"").slice(0,24);
+      const d = new Date();
+      const yyyy = d.getFullYear();
+      const mm = String(d.getMonth()+1).padStart(2,"0");
+      const dd = String(d.getDate()).padStart(2,"0");
+      return `绩效评估_${safeName}_${safePeriod}_${yyyy}${mm}${dd}`;
+    }
+
+    async function exportPdf() {
+      // 使用浏览器的打印/另存为 PDF 能力，中文显示最稳定（避免 jsPDF 默认字体不支持中文导致乱码/方块）
+      const data = collectData();
+      const base = buildFileBaseName(data.emp.name, data.emp.period);
+
+      const esc = (s) => String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+      let html = `
+      <html>
+        <head>
+          <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+          <meta charset="utf-8"/>
+          <title>${esc(base)}.pdf</title>
+          <style>
+            body{font-family:Arial,"PingFang SC","Microsoft YaHei"; margin:24px; line-height:1.55;}
+            h1{font-size:18px;margin:0 0 8px;}
+            h2{font-size:14px;margin:18px 0 8px;}
+            h3{font-size:13px;margin:12px 0 6px;}
+            table{border-collapse:collapse;width:100%}
+            td,th{border:1px solid #ccc;padding:6px;font-size:12px;vertical-align:top}
+            th{background:#f3f5ff}
+            .muted{color:#666;font-size:11px}
+            @page { size: A4; margin: 16mm; }
+          </style>
+        </head>
+        <body>
+          <h1>绩效评定归档</h1>
+          <div class="muted">生成时间：${esc(new Date(data.createdAt).toLocaleString("zh-CN"))}</div>
+
+          <h2>员工信息</h2>
+          <table>
+            <tr><th>字段</th><th>内容</th></tr>
+            <tr><td>被评估人</td><td>${esc(data.emp.name)}</td></tr>
+            <tr><td>员工类型</td><td>${esc(data.emp.role)}</td></tr>
+            <tr><td>考核周期</td><td>${esc(data.emp.period)}</td></tr>
+            <tr><td>部门/团队</td><td>${esc(data.emp.dept)}</td></tr>
+            <tr><td>岗位/职能</td><td>${esc(data.emp.title)}</td></tr>
+            <tr><td>归档编号</td><td>${esc(data.emp.archiveId)}</td></tr>
+            <tr><td>备注</td><td>${esc(data.emp.note)}</td></tr>
+            <tr><td><strong>最终得分</strong></td><td><strong>${esc(data.final100.toFixed(1))} / 100</strong></td></tr>
+          </table>
+      `;
+
+      for (const ev of data.evals) {
+        html += `<h2>${esc(ev.label)}（权重${Math.round(ev.weight*100)}%）${ev.evaluatorName ? " - " + esc(ev.evaluatorName) : ""}</h2>`;
+        for (const m of ev.modules) {
+          html += `<h3>${esc(m.name)}（模块权重${Math.round(m.weight*100)}%）</h3>`;
+          html += `<table><tr><th>维度</th><th>维度权重</th><th>评分(1-5)</th><th>评语</th></tr>`;
+          for (const d of m.dims) {
+            html += `<tr>
+              <td>${esc(d.name)}<div class="muted">${esc(d.desc)}</div></td>
+              <td>${Math.round(d.weight*100)}%</td>
+              <td>${d.score ?? ""}</td>
+              <td>${esc(d.comment)}</td>
+            </tr>`;
+          }
+          html += `</table>`;
+        }
+        if (ev.overallComment) {
+          html += `<p><strong>总评：</strong>${esc(ev.overallComment)}</p>`;
+        }
+      }
+
+      html += `</body></html>`;
+
+      const w = window.open("", "_blank");
+      if (!w) {
+        alert("浏览器拦截了弹窗。请允许弹窗后再导出 PDF。");
+        return;
+      }
+      w.document.open();
+      w.document.write(html);
+      w.document.close();
+      w.focus();
+
+      // 等待渲染完成后触发打印（用户在打印对话框中选择“保存为 PDF”）
+      w.onload = () => {
+        w.print();
+      };
+    }
+
+    function exportDoc() {
+      const data = collectData();
+      const base = buildFileBaseName(data.emp.name, data.emp.period);
+
+      // simple HTML -> .doc download (works in many HR flows)
+      const esc = (s) => String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+      let html = `
+      <html xmlns:o="urn:schemas-microsoft-com:office:office"
+            xmlns:w="urn:schemas-microsoft-com:office:word"
+            xmlns="http://www.w3.org/TR/REC-html40">
+      <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+      <meta charset="utf-8">
+      <style>
+        body{font-family:Arial,"PingFang SC","Microsoft YaHei";}
+        h1{font-size:18px} h2{font-size:14px;margin-top:18px}
+        table{border-collapse:collapse;width:100%}
+        td,th{border:1px solid #ccc;padding:6px;font-size:12px;vertical-align:top}
+        th{background:#f3f5ff}
+        .muted{color:#666}
+      </style></head><body>
+        <h1>绩效评定归档</h1>
+        <div class="muted">生成时间：${esc(new Date(data.createdAt).toLocaleString("zh-CN"))}</div>
+        <h2>员工信息</h2>
+        <table>
+          <tr><th>字段</th><th>内容</th></tr>
+          <tr><td>被评估人</td><td>${esc(data.emp.name)}</td></tr>
+          <tr><td>员工类型</td><td>${esc(data.emp.role)}</td></tr>
+          <tr><td>考核周期</td><td>${esc(data.emp.period)}</td></tr>
+          <tr><td>部门/团队</td><td>${esc(data.emp.dept)}</td></tr>
+          <tr><td>岗位/职能</td><td>${esc(data.emp.title)}</td></tr>
+          <tr><td>归档编号</td><td>${esc(data.emp.archiveId)}</td></tr>
+          <tr><td>备注</td><td>${esc(data.emp.note)}</td></tr>
+          <tr><td><strong>最终得分</strong></td><td><strong>${esc(data.final100.toFixed(1))} / 100</strong></td></tr>
+        </table>
+      `;
+
+      for (const ev of data.evals) {
+        html += `<h2>${esc(ev.label)}（权重${Math.round(ev.weight*100)}%）${ev.evaluatorName ? " - " + esc(ev.evaluatorName) : ""}</h2>`;
+        for (const m of ev.modules) {
+          html += `<h3 style="font-size:13px;margin:10px 0 6px;">${esc(m.name)}（模块权重${Math.round(m.weight*100)}%）</h3>`;
+          html += `<table><tr><th>维度</th><th>维度权重</th><th>评分(1-5)</th><th>评语</th></tr>`;
+          for (const d of m.dims) {
+            html += `<tr>
+              <td>${esc(d.name)}<div class="muted">${esc(d.desc)}</div></td>
+              <td>${Math.round(d.weight*100)}%</td>
+              <td>${d.score ?? ""}</td>
+              <td>${esc(d.comment)}</td>
+            </tr>`;
+          }
+          html += `</table>`;
+        }
+        if (ev.overallComment) {
+          html += `<p><strong>总评：</strong>${esc(ev.overallComment)}</p>`;
+        }
+      }
+
+      html += `</body></html>`;
+
+      const bom = "\ufeff";
+      const blob = new Blob([bom, html], { type: "application/msword;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = base + ".doc";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    function resetAll() {
+      document.querySelectorAll("input, textarea").forEach(x => x.value="");
+      document.querySelectorAll("select").forEach(s => {
+        if (s.id === "role") return;
+        s.value="";
+      });
+      recalcAll();
+    }
+
+    roleEl.addEventListener("change", buildPanels);
+    btnPdf.addEventListener("click", exportPdf);
+    btnDoc.addEventListener("click", exportDoc);
+    btnReset.addEventListener("click", resetAll);
+
+    // init
+    buildPanels();
+  </script>
+</body>
+</html>
