@@ -1,0 +1,1063 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>新人入职手册学习问卷｜在线答题与归档</title>
+  <style>
+    :root {
+      --bg: #0b1020;
+      --card: rgba(255,255,255,.06);
+      --card2: rgba(255,255,255,.09);
+      --text: rgba(255,255,255,.92);
+      --muted: rgba(255,255,255,.70);
+      --line: rgba(255,255,255,.12);
+      --good: #31d0aa;
+      --bad: #ff6b6b;
+      --warn: #ffd166;
+      --accent: #7aa2ff;
+      --shadow: 0 12px 36px rgba(0,0,0,.35);
+      --radius: 18px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      background: radial-gradient(900px 500px at 20% 0%, rgba(122,162,255,.24), transparent 60%),
+                  radial-gradient(700px 500px at 85% 15%, rgba(49,208,170,.18), transparent 60%),
+                  radial-gradient(900px 500px at 50% 100%, rgba(255,209,102,.14), transparent 60%),
+                  var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+    a { color: var(--accent); }
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 22px 18px 46px;
+    }
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+    .title {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .title h1 {
+      font-size: 20px;
+      margin: 0;
+      letter-spacing: .2px;
+    }
+    .title .sub {
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .pill {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.04);
+      padding: 8px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 14px;
+      align-items: start;
+    }
+    @media (max-width: 920px) {
+      .grid { grid-template-columns: 1fr; }
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 16px;
+      box-shadow: var(--shadow);
+    }
+    .card h2 {
+      font-size: 15px;
+      margin: 0 0 10px;
+      color: rgba(255,255,255,.95);
+    }
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    @media (max-width: 520px) {
+      .row { grid-template-columns: 1fr; }
+    }
+    label {
+      display: block;
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    input[type="text"], input[type="email"] {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: rgba(0,0,0,.20);
+      color: var(--text);
+      outline: none;
+    }
+    input[type="text"]:focus, input[type="email"]:focus {
+      border-color: rgba(122,162,255,.55);
+      box-shadow: 0 0 0 3px rgba(122,162,255,.16);
+    }
+    .btns {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+    button {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.05);
+      color: var(--text);
+      padding: 10px 12px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 13px;
+    }
+    button.primary {
+      background: rgba(122,162,255,.18);
+      border-color: rgba(122,162,255,.35);
+    }
+    button.danger {
+      background: rgba(255,107,107,.15);
+      border-color: rgba(255,107,107,.30);
+    }
+    button:disabled {
+      opacity: .55;
+      cursor: not-allowed;
+    }
+    .muted { color: var(--muted); font-size: 12px; }
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin: 12px 0 8px;
+      padding: 10px 12px;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.04);
+    }
+    .progress {
+      height: 10px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(0,0,0,.20);
+      overflow: hidden;
+      flex: 1;
+    }
+    .bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, rgba(122,162,255,.95), rgba(49,208,170,.95));
+    }
+    .timer {
+      font-variant-numeric: tabular-nums;
+      font-size: 12px;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+    .qwrap { margin-top: 10px; }
+    .q {
+      padding: 14px;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.04);
+      margin-bottom: 10px;
+    }
+    .qhead {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .qtitle {
+      font-weight: 650;
+      font-size: 14px;
+      margin: 0;
+      line-height: 1.5;
+    }
+    .qmeta {
+      font-size: 12px;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+    .opt {
+      display: flex;
+      gap: 10px;
+      align-items: start;
+      padding: 8px 10px;
+      border-radius: 12px;
+      border: 1px solid transparent;
+    }
+    .opt:hover {
+      border-color: rgba(255,255,255,.12);
+      background: rgba(255,255,255,.03);
+    }
+    .opt input { margin-top: 2px; }
+    .opt span { line-height: 1.45; }
+    .sectionBadge {
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+      padding: 7px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(0,0,0,.18);
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .resultBox {
+      border: 1px solid var(--line);
+      background: rgba(0,0,0,.18);
+      border-radius: 16px;
+      padding: 14px;
+      margin-top: 10px;
+    }
+    .score {
+      font-size: 40px;
+      font-weight: 800;
+      letter-spacing: .4px;
+      line-height: 1.0;
+      margin: 0;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.04);
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .badge.good { border-color: rgba(49,208,170,.35); background: rgba(49,208,170,.10); color: rgba(255,255,255,.90); }
+    .badge.bad { border-color: rgba(255,107,107,.35); background: rgba(255,107,107,.10); color: rgba(255,255,255,.90); }
+    .reviewItem {
+      padding: 12px;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.035);
+      margin: 10px 0;
+    }
+    .reviewItem .top {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: start;
+      margin-bottom: 8px;
+    }
+    .reviewItem .top .left {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .kvs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    @media (max-width: 520px) {
+      .kvs { grid-template-columns: 1fr; }
+    }
+    .kv {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 10px;
+      background: rgba(0,0,0,.16);
+    }
+    .kv .k {
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+    .kv .v {
+      font-size: 13px;
+      line-height: 1.45;
+      word-break: break-word;
+    }
+    .footer {
+      margin-top: 16px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .small {
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .qNav {
+      display: grid;
+      grid-template-columns: repeat(10, minmax(0, 1fr));
+      gap: 6px;
+      margin-top: 10px;
+    }
+    @media (max-width: 920px) {
+      .qNav { grid-template-columns: repeat(8, minmax(0, 1fr)); }
+    }
+    @media (max-width: 520px) {
+      .qNav { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+    }
+    .qNav button {
+      padding: 8px 0;
+      border-radius: 12px;
+      font-size: 12px;
+      background: rgba(255,255,255,.04);
+    }
+    .qNav button.answered {
+      border-color: rgba(49,208,170,.35);
+      background: rgba(49,208,170,.10);
+    }
+    .qNav button.current {
+      border-color: rgba(122,162,255,.55);
+      background: rgba(122,162,255,.14);
+    }
+    .qNav button.wrong {
+      border-color: rgba(255,107,107,.40);
+      background: rgba(255,107,107,.12);
+    }
+    .hint {
+      border-left: 3px solid rgba(122,162,255,.55);
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: rgba(122,162,255,.08);
+      color: rgba(255,255,255,.86);
+      font-size: 12px;
+      line-height: 1.55;
+    }
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="title">
+        <h1>新人入职手册学习问卷｜在线答题与归档</h1>
+        <div class="sub">30题 · 自动判分 · 错题解析 · 一键导出归档（UTF‑8）</div>
+      </div>
+      <div class="pill" id="metaPill">题目来源：问卷文档（已内置）</div>
+    </header>
+
+    <div class="grid">
+      <div class="card" id="leftCard">
+        <h2>① 填写受试人信息</h2>
+        <div class="row">
+          <div>
+            <label>姓名（用于归档文件名）</label>
+            <input id="name" type="text" placeholder="例如：张三" />
+          </div>
+          <div>
+            <label>邮箱/飞书账号（可选）</label>
+            <input id="email" type="email" placeholder="例如：zhangsan@company.com" />
+          </div>
+        </div>
+        <div class="row" style="margin-top:10px;">
+          <div>
+            <label>部门/项目（可选）</label>
+            <input id="dept" type="text" placeholder="例如：增长组" />
+          </div>
+          <div>
+            <label>工号（可选）</label>
+            <input id="eid" type="text" placeholder="例如：A01234" />
+          </div>
+        </div>
+
+        <div class="hint" style="margin-top:12px;">
+          建议在开始答题前确认信息无误。提交后会展示错题与正确答案，并可导出「HTML归档报告」与「JSON归档数据」。
+        </div>
+
+        <div class="btns">
+          <button class="primary" id="startBtn">开始答题</button>
+          <button id="resumeBtn">继续上次答题</button>
+          <button class="danger" id="resetBtn" title="清空本机保存的草稿">清空草稿</button>
+        </div>
+
+        <div class="footer">
+          <div>本页离线可用：下载后直接双击打开即可（推荐 Chrome / Edge）。</div>
+        </div>
+      </div>
+
+      <div class="card" id="rightCard">
+        <h2>② 答题区</h2>
+        <div class="nav hidden" id="navBar">
+          <div class="progress" aria-label="进度条"><div class="bar" id="bar"></div></div>
+          <div class="timer" id="timer">剩余 30:00</div>
+        </div>
+
+        <div id="quiz" class="hidden">
+          <div class="small" id="sectionLabel"></div>
+          <div class="qwrap" id="qwrap"></div>
+
+          <div class="nav">
+            <button id="prevBtn">上一题</button>
+            <div class="muted" id="posText">1 / 30</div>
+            <button id="nextBtn">下一题</button>
+          </div>
+
+          <div class="small">快速跳题</div>
+          <div class="qNav" id="qNav"></div>
+
+          <div class="btns" style="margin-top:14px;">
+            <button class="primary" id="submitBtn">提交并评分</button>
+            <button id="saveBtn">保存草稿</button>
+          </div>
+
+          <div class="small" style="margin-top:10px;">
+            * 自动保存：每次选择都会写入本机存储（localStorage）；不会上传网络。
+          </div>
+        </div>
+
+        <div id="result" class="hidden">
+          <h2>③ 结果与错题解析</h2>
+          <div class="resultBox" id="resultBox"></div>
+
+          <div class="btns">
+            <button class="primary" id="downloadHtmlBtn">下载归档报告（HTML）</button>
+            <button id="downloadJsonBtn">下载归档数据（JSON）</button>
+            <button id="copySummaryBtn">复制结果摘要</button>
+            <button class="danger" id="redoBtn">重新答题</button>
+          </div>
+
+          <div class="footer">
+            <div>归档建议：将导出的HTML/JSON上传至飞书云文档或指定归档目录。</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+<script>
+const QUESTIONS = [{"id": 1, "type": "single", "points": 3, "question": "公司的核心价值观不包括以下哪项？", "options": [{"key": "A", "text": "不作假"}, {"key": "B", "text": "不设限"}, {"key": "C", "text": "用户导向"}, {"key": "D", "text": "利润优先"}], "answer": "D", "explanation": "公司核心价值观为\"不作假、不设限、用户导向、以人为本\"[3]", "section": "Section 1｜团队手册"}, {"id": 2, "type": "single", "points": 3, "question": "以下哪项是公司的使命？", "options": [{"key": "A", "text": "成为全球领先的AI公司"}, {"key": "B", "text": "利用AI技术为中国偏远地区学生带来教育革命"}, {"key": "C", "text": "开发最先进的AI教学产品"}, {"key": "D", "text": "提高教育机构的运营效率"}], "answer": "B", "explanation": "公司使命是\"利用前沿AI技术，为中国偏远地区近两亿名学生带来教育革命\"[3]", "section": "Section 1｜团队手册"}, {"id": 3, "type": "multi", "points": 4, "question": "公司方法论包括哪些原则？（多选）", "options": [{"key": "A", "text": "使命第一"}, {"key": "B", "text": "用户视角"}, {"key": "C", "text": "快速迭代"}, {"key": "D", "text": "AI原生"}, {"key": "E", "text": "利润优先"}], "answer": "ABCD", "explanation": "公司方法论包括\"使命第一、用户视角、清晰具体、快速迭代、AI原生\"[3]", "section": "Section 1｜团队手册"}, {"id": 4, "type": "tf", "points": 2, "question": "公司实行\"身份无差别原则\"，对实习生和全职员工执行同等工作标准。", "options": [{"key": "√", "text": "正确"}, {"key": "×", "text": "错误"}], "answer": "√", "explanation": "团队管理不区分\"实习生\"与\"全职员工\"，视每一位实习生为独立的职业人[3]", "section": "Section 1｜团队手册"}, {"id": 5, "type": "tf", "points": 2, "question": "公司允许发送Word/Excel等本地文件进行协作，只要确保版本一致。", "options": [{"key": "√", "text": "正确"}, {"key": "×", "text": "错误"}], "answer": "×", "explanation": "公司实行\"线上优先原则\"，严禁发送本地文件进行协作（归档或法务需求除外）[3]", "section": "Section 1｜团队手册"}, {"id": 6, "type": "single", "points": 3, "question": "新人入职后的第一项任务是？", "options": [{"key": "A", "text": "参加安全培训"}, {"key": "B", "text": "建立个人主页"}, {"key": "C", "text": "熟悉团队成员"}, {"key": "D", "text": "完成产品测试"}], "answer": "B", "explanation": "新人入职第一项任务是使用指定模版建立个人主页，并贴在飞书名片签名处[3]", "section": "Section 1｜团队手册"}, {"id": 7, "type": "single", "points": 3, "question": "公司\"不作假\"价值观在工作中的具体体现是？", "options": [{"key": "A", "text": "只报告好消息，不报告坏消息"}, {"key": "B", "text": "对数据和结果进行美化以符合预期"}, {"key": "C", "text": "如实汇报工作进展，包括遇到的问题和挑战"}, {"key": "D", "text": "为达成交付可以适当夸大成果"}], "answer": "C", "explanation": "\"不作假\"是公司核心价值观之一，要求员工如实汇报工作进展，包括遇到的问题和挑战[3]", "section": "Section 1｜团队手册"}, {"id": 8, "type": "single", "points": 3, "question": "关于公司\"以人为本\"价值观的描述，以下哪项最准确？", "options": [{"key": "A", "text": "优先考虑员工个人利益"}, {"key": "B", "text": "为员工提供最好的薪酬待遇"}, {"key": "C", "text": "尊重员工个性，提供发展空间，关注员工成长与福祉"}, {"key": "D", "text": "员工可以自主决定工作内容和时间"}], "answer": "C", "explanation": "\"以人为本\"价值观体现在尊重员工个性，提供发展空间，关注员工成长与福祉[3]", "section": "Section 1｜团队手册"}, {"id": 9, "type": "single", "points": 4, "question": "公司文化中\"不设限\"理念的核心是指？", "options": [{"key": "A", "text": "员工可以随意选择工作内容"}, {"key": "B", "text": "鼓励突破常规思维，挑战不可能"}, {"key": "C", "text": "没有明确的工作目标和KPI"}, {"key": "D", "text": "不需要遵守公司规章制度"}], "answer": "B", "explanation": "\"不设限\"文化鼓励员工突破常规思维，挑战不可能，勇于尝试创新方法解决问题[3]", "section": "Section 1｜团队手册"}, {"id": 10, "type": "single", "points": 3, "question": "在飞书中收到Word文件，正确的处理方式是？", "options": [{"key": "A", "text": "下载到本地编辑后通过邮件回复"}, {"key": "B", "text": "直接在飞书中打开并转为在线文档"}, {"key": "C", "text": "要求对方重新发送PDF格式"}, {"key": "D", "text": "转发给同事征求意见"}], "answer": "B", "explanation": "飞书支持将接收到的Word文件直接\"转为在线文档\"进行查看或编辑[4]", "section": "Section 2｜飞书使用手册"}, {"id": 11, "type": "multi", "points": 4, "question": "飞书消息加急功能支持哪些方式？（多选）", "options": [{"key": "A", "text": "应用内加急"}, {"key": "B", "text": "短信通知"}, {"key": "C", "text": "电话通知"}, {"key": "D", "text": "邮件通知"}], "answer": "ABC", "explanation": "飞书对紧急消息加急支持应用内加急、短信和电话通知等方式[4]", "section": "Section 2｜飞书使用手册"}, {"id": 12, "type": "multi", "points": 5, "question": "在创建飞书任务时，完整的任务描述应包含哪些要素？（多选，全选正确得分）", "options": [{"key": "A", "text": "任务背景（Why）"}, {"key": "B", "text": "目标（What）"}, {"key": "C", "text": "产出要求"}, {"key": "D", "text": "截止日期"}, {"key": "E", "text": "优先级"}, {"key": "F", "text": "负责人"}], "answer": "ABCDEF", "explanation": "完整的飞书任务描述应包含背景、目标、产出要求、截止日期、优先级和负责人等要素[4]", "section": "Section 2｜飞书使用手册"}, {"id": 13, "type": "single", "points": 3, "question": "如何在飞书文档中针对特定内容进行讨论？", "options": [{"key": "A", "text": "在文档末尾添加评论"}, {"key": "B", "text": "选定内容后点击\"添加评论\""}, {"key": "C", "text": "通过飞书消息单独联系文档作者"}, {"key": "D", "text": "导出文档后在本地添加批注"}], "answer": "B", "explanation": "选定任意文档内容，点击工具栏最右\"添加评论\"按钮即可进行针对性讨论[4]", "section": "Section 2｜飞书使用手册"}, {"id": 14, "type": "single", "points": 3, "question": "飞书日历支持哪种视图模式？", "options": [{"key": "A", "text": "日视图"}, {"key": "B", "text": "周视图"}, {"key": "C", "text": "月视图"}, {"key": "D", "text": "以上全部支持"}], "answer": "D", "explanation": "飞书日历可切换日视图、周视图、月视图，移动端还支持列表视图[4]", "section": "Section 2｜飞书使用手册"}, {"id": 15, "type": "multi", "points": 4, "question": "关于飞书文档共享，以下说法正确的有？（多选）", "options": [{"key": "A", "text": "可设置不同成员的编辑权限"}, {"key": "B", "text": "共享链接默认对公司内部所有人可见"}, {"key": "C", "text": "可通过链接直接邀请外部人员查看"}, {"key": "D", "text": "共享后无法撤销访问权限"}], "answer": "AC", "explanation": "飞书文档可设置不同权限，支持通过链接邀请外部人员，但共享链接需手动设置可见范围，且可随时撤销权限[4]", "section": "Section 2｜飞书使用手册"}, {"id": 16, "type": "tf", "points": 2, "question": "飞书会议群组支持\"Pin\"功能，可以标记重要聊天记录。", "options": [{"key": "√", "text": "正确"}, {"key": "×", "text": "错误"}], "answer": "√", "explanation": "\"Pin\"功能类似于群收藏，可以标记群组重要的聊天记录[4]", "section": "Section 2｜飞书使用手册"}, {"id": 17, "type": "single", "points": 2, "question": "飞书文档的哪个功能可以追踪文档的修改历史？", "options": [{"key": "A", "text": "评论功能"}, {"key": "B", "text": "版本历史"}, {"key": "C", "text": "共享设置"}, {"key": "D", "text": "导出功能"}], "answer": "B", "explanation": "飞书文档的\"版本历史\"功能可以追踪所有修改记录，包括修改人、时间和内容变更[4]", "section": "Section 2｜飞书使用手册"}, {"id": 18, "type": "single", "points": 3, "question": "以下哪项属于公司\"底线红线\"行为？", "options": [{"key": "A", "text": "任务完成后24小时内同步结果"}, {"key": "B", "text": "P0任务2小时内无响应且联系不到"}, {"key": "C", "text": "使用飞书在线文档协作"}, {"key": "D", "text": "提前同步任务延期风险"}], "answer": "B", "explanation": "\"消失\"（P0任务2小时内无响应且联系不到）是公司明确的底线红线[1]", "section": "Section 3｜沟通与协作共识"}, {"id": 19, "type": "multi", "points": 4, "question": "任务描述需包含哪些要素才算是清晰的？（多选）", "options": [{"key": "A", "text": "背景（Why）"}, {"key": "B", "text": "目标（What）"}, {"key": "C", "text": "产出要求"}, {"key": "D", "text": "参考案例"}, {"key": "E", "text": "历史数据"}], "answer": "ABC", "explanation": "清晰的任务描述需包含背景(Why)、目标(What)和产出要求[1]", "section": "Section 3｜沟通与协作共识"}, {"id": 20, "type": "tf", "points": 2, "question": "任务执行中遇到卡点应先独立解决，24小时仍无法解决再寻求帮助。", "options": [{"key": "√", "text": "正确"}, {"key": "×", "text": "错误"}], "answer": "×", "explanation": "发现卡点后应在4小时内@相关人求助，不能长时间沉默[1]", "section": "Section 3｜沟通与协作共识"}, {"id": 21, "type": "single", "points": 3, "question": "任务预计延期时，正确的做法是？", "options": [{"key": "A", "text": "默默加快进度，争取按期完成"}, {"key": "B", "text": "立即@任务发起人/DM说明原因和新DDL建议"}, {"key": "C", "text": "等任务到期后再解释原因"}, {"key": "D", "text": "自行调整DDL并继续执行"}], "answer": "B", "explanation": "预见任务延期应立即@任务发起人/DM说明原因和新DDL建议，等对方明确回复[1]", "section": "Section 3｜沟通与协作共识"}, {"id": 22, "type": "tf", "points": 3, "question": "DM负责定优先级、审批和评估绩效，Mentor负责方法论指导和技能培养。", "options": [{"key": "√", "text": "正确"}, {"key": "×", "text": "错误"}], "answer": "√", "explanation": "DM对结果负责（定优先级、审批、评估绩效），Mentor对成长负责（方法论指导、技能培养）[1]", "section": "Section 3｜沟通与协作共识"}, {"id": 23, "type": "single", "points": 3, "question": "任务完成后，正确的交付方式是？", "options": [{"key": "A", "text": "直接告诉DM\"已完成\""}, {"key": "B", "text": "发送成果文件到相关群"}, {"key": "C", "text": "主动告知+发链接：\"XX任务已完成，产出在[链接]\""}, {"key": "D", "text": "等待他人询问后再提供结果"}], "answer": "C", "explanation": "任务完成后应主动告知+发链接：\"XX任务已完成，产出在[链接]\"[1]", "section": "Section 3｜沟通与协作共识"}, {"id": 24, "type": "single", "points": 4, "question": "AI Native工作流的正确顺序是？", "options": [{"key": "A", "text": "AI生成初稿 → 人类补充判断 → AI整合 → 人类校验"}, {"key": "B", "text": "人类定义需求 → AI生成初稿 → 人类直接使用"}, {"key": "C", "text": "AI独立完成 → 人类简单修改"}, {"key": "D", "text": "人类完全完成 → AI优化格式"}], "answer": "A", "explanation": "AI Native工作流为\"AI生成调研框架/初稿 → 人类补充私有信息/判断 → AI整合 → 人类最终校验\"[2]", "section": "Section 4｜AI协同进化手册"}, {"id": 25, "type": "multi", "points": 5, "question": "高质量提示词应包含哪些要素？（多选）", "options": [{"key": "A", "text": "背景(Context)"}, {"key": "B", "text": "输入(Input)"}, {"key": "C", "text": "输出(Output)"}, {"key": "D", "text": "重点要求(Constraints)"}, {"key": "E", "text": "模型选择建议"}], "answer": "ABCD", "explanation": "高质量提示词需包含背景、输入、输出和重点要求四类信息[2]", "section": "Section 4｜AI协同进化手册"}, {"id": 26, "type": "tf", "points": 3, "question": "AI输出的结果都是可靠的，可直接作为决策依据。", "options": [{"key": "√", "text": "正确"}, {"key": "×", "text": "错误"}], "answer": "×", "explanation": "AI会产生幻觉，所有数据、链接、法规必须人工二次验证[2]", "section": "Section 4｜AI协同进化手册"}, {"id": 27, "type": "single", "points": 4, "question": "以下哪项是AI目前还不能做到的？", "options": [{"key": "A", "text": "海量精准检索"}, {"key": "B", "text": "封闭域专家推理"}, {"key": "C", "text": "开放域模糊决策"}, {"key": "D", "text": "工具使用"}], "answer": "C", "explanation": "AI目前还不擅长处理\"潜台词\"或在信息不全时做出最优战略决策等开放域模糊决策[2]", "section": "Section 4｜AI协同进化手册"}, {"id": 28, "type": "single", "points": 4, "question": "在AI辅助创作的文档中，纯人类视角的关键结论应使用什么标记？", "options": [{"key": "A", "text": "红色 [AI Generated]"}, {"key": "B", "text": "绿色 [Human Insight]"}, {"key": "C", "text": "蓝色 [Verified Data]"}, {"key": "D", "text": "黄色 [Important]"}], "answer": "B", "explanation": "绿色 [Human Insight] 用于标记纯人类视角的关键结论与决策", "section": "Section 4｜AI协同进化手册"}, {"id": 29, "type": "multi", "points": 5, "question": "AI Native工作原则包括哪些？（多选）", "options": [{"key": "A", "text": "任务来了先想AI能做什么"}, {"key": "B", "text": "只有AI做不了的才自己做"}, {"key": "C", "text": "完全依赖AI生成内容"}, {"key": "D", "text": "人类对AI输出结果负责"}, {"key": "E", "text": "AI输出直接作为最终成果"}], "answer": "ABD", "explanation": "AI Native工作原则包括\"任务来了→先想AI能做什么→只有AI做不了的才自己做\"，且人类对AI输出结果负责", "section": "Section 4｜AI协同进化手册"}, {"id": 30, "type": "single", "points": 7, "question": "公司推荐的AI工具选择流程是？", "options": [{"key": "A", "text": "直接使用最热门的AI工具"}, {"key": "B", "text": "先评估工具价值 = (提升效率 × 时薪) - (学习成本 + 购买成本)"}, {"key": "C", "text": "优先选择免费工具"}, {"key": "D", "text": "由管理层统一指定所有AI工具"}], "answer": "B", "explanation": "公司推荐的AI工具选择流程是先评估\"工具价值 = (提升效率 × 时薪) - (学习成本 + 购买成本)\"，选择能产生最大正向价值的工具[2]\n本次调整后问卷共30题，总分100分，通过优化各部分分值权重，更精准地反映了不同手册内容的重要程度。团队手册增加了文化理念相关题目（第9题），AI协同进化手册强化了工具选择实践考察（第30题），使问卷更全面地覆盖了新人入职所需的核心知识与能力。", "section": "Section 4｜AI协同进化手册"}];
+const TOTAL_POINTS = 103; // 原始分值总和（来自文档各题标注）
+const PASS_LINE = 80; // 合格线：80分（按100分标准化后）
+
+const STORAGE_KEY = "onboarding_quiz_v1";
+
+const $ = (id) => document.getElementById(id);
+
+function nowISO() {
+  const d = new Date();
+  const pad = (n) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+}
+
+function safeFilePart(s) {
+  return (s || "匿名").replace(/[\\/:*?"<>|\s]+/g, "_").slice(0, 40);
+}
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return null;
+    return JSON.parse(raw);
+  } catch (e) {
+    return null;
+  }
+}
+
+function saveState(state) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+function clearState() {
+  localStorage.removeItem(STORAGE_KEY);
+}
+
+function normalizeScore(raw) {
+  // 标准化到 100 分（避免文档中各题分值合计与 100 不一致时产生偏差）
+  return Math.round((raw / TOTAL_POINTS) * 100);
+}
+
+function setMetaPill() {
+  $("metaPill").textContent = `题目来源：新人入职手册学习问卷（共${QUESTIONS.length}题；标准化100分）`;
+}
+
+setMetaPill();
+
+let state = {
+  startedAt: null,
+  durationSec: 30 * 60, // 30分钟
+  answers: {}, // id -> string or array
+  person: { name:"", email:"", dept:"", eid:"" },
+  finishedAt: null,
+  result: null
+};
+
+let currentIndex = 0;
+let timerTick = null;
+
+function ensureState() {
+  const loaded = loadState();
+  if (loaded && !loaded.finishedAt) {
+    state = loaded;
+    // fill person fields
+    $("name").value = state.person?.name || "";
+    $("email").value = state.person?.email || "";
+    $("dept").value = state.person?.dept || "";
+    $("eid").value = state.person?.eid || "";
+    $("resumeBtn").disabled = false;
+  } else {
+    $("resumeBtn").disabled = true;
+  }
+}
+
+ensureState();
+
+function startQuiz(resume=false) {
+  // snapshot person
+  state.person = {
+    name: $("name").value.trim(),
+    email: $("email").value.trim(),
+    dept: $("dept").value.trim(),
+    eid: $("eid").value.trim(),
+  };
+  if (!resume) {
+    state.startedAt = new Date().toISOString();
+    state.finishedAt = null;
+    state.result = null;
+    state.answers = {};
+    currentIndex = 0;
+  } else {
+    currentIndex = Math.min(currentIndex, QUESTIONS.length-1);
+  }
+  saveState(state);
+  $("leftCard").classList.add("hidden");
+  $("quiz").classList.remove("hidden");
+  $("navBar").classList.remove("hidden");
+  $("result").classList.add("hidden");
+  renderQuestion();
+  renderNavGrid();
+  startTimer();
+}
+
+function secondsLeft() {
+  const start = new Date(state.startedAt).getTime();
+  const now = Date.now();
+  const elapsed = Math.floor((now - start) / 1000);
+  return Math.max(0, state.durationSec - elapsed);
+}
+
+function startTimer() {
+  if (timerTick) clearInterval(timerTick);
+  const update = () => {
+    const left = secondsLeft();
+    const m = String(Math.floor(left/60)).padStart(2,"0");
+    const s = String(left%60).padStart(2,"0");
+    $("timer").textContent = `剩余 ${m}:${s}`;
+    // progress
+    const answeredCount = Object.keys(state.answers||{}).filter(k => {
+      const v = state.answers[k];
+      return v && (Array.isArray(v) ? v.length>0 : String(v).length>0);
+    }).length;
+    const pct = Math.round((answeredCount / QUESTIONS.length) * 100);
+    $("bar").style.width = pct + "%";
+    if (left === 0) {
+      clearInterval(timerTick);
+      timerTick = null;
+      gradeAndShow(true);
+    }
+  };
+  update();
+  timerTick = setInterval(update, 400);
+}
+
+function renderQuestion() {
+  const q = QUESTIONS[currentIndex];
+  $("posText").textContent = `${currentIndex+1} / ${QUESTIONS.length}`;
+  $("sectionLabel").innerHTML = `<span class="sectionBadge">${q.section}</span>`;
+
+  const wrap = $("qwrap");
+  wrap.innerHTML = "";
+
+  const qEl = document.createElement("div");
+  qEl.className = "q";
+  qEl.id = "q_" + q.id;
+
+  const typeLabel = q.type === "single" ? "单选" : (q.type === "multi" ? "多选" : "判断");
+  qEl.innerHTML = `
+    <div class="qhead">
+      <div>
+        <div class="qtitle">${q.id}. ${escapeHtml(q.question)}</div>
+        <div class="small">${typeLabel} · ${q.points}分</div>
+      </div>
+      <div class="qmeta">作答后自动保存</div>
+    </div>
+    <div id="opts"></div>
+  `;
+  wrap.appendChild(qEl);
+
+  const opts = qEl.querySelector("#opts");
+  const saved = state.answers[String(q.id)];
+  const isMulti = q.type === "multi";
+  q.options.forEach(opt => {
+    const id = `q${q.id}_${opt.key}`;
+    const checked = isMulti
+      ? (Array.isArray(saved) && saved.includes(opt.key))
+      : (saved === opt.key);
+
+    const item = document.createElement("label");
+    item.className = "opt";
+    item.setAttribute("for", id);
+
+    item.innerHTML = `
+      <input id="${id}" name="q${q.id}" type="${isMulti ? "checkbox" : "radio"}" value="${opt.key}" ${checked ? "checked" : ""} />
+      <span><strong>${opt.key}.</strong> ${escapeHtml(opt.text)}</span>
+    `;
+
+    item.querySelector("input").addEventListener("change", () => {
+      onSelect(q.id, isMulti);
+    });
+
+    opts.appendChild(item);
+  });
+
+  $("prevBtn").disabled = currentIndex === 0;
+  $("nextBtn").disabled = currentIndex === QUESTIONS.length - 1;
+  highlightNavCurrent();
+}
+
+function onSelect(qid, isMulti) {
+  const name = "q" + qid;
+  const inputs = Array.from(document.querySelectorAll(`input[name="${name}"]`));
+  if (isMulti) {
+    const selected = inputs.filter(i => i.checked).map(i => i.value).sort();
+    state.answers[String(qid)] = selected;
+  } else {
+    const checked = inputs.find(i => i.checked);
+    state.answers[String(qid)] = checked ? checked.value : "";
+  }
+  saveState(state);
+  renderNavGrid();
+  highlightNavCurrent();
+}
+
+function renderNavGrid() {
+  const nav = $("qNav");
+  nav.innerHTML = "";
+  for (let i=0;i<QUESTIONS.length;i++) {
+    const q = QUESTIONS[i];
+    const btn = document.createElement("button");
+    btn.textContent = q.id;
+    const v = state.answers[String(q.id)];
+    const answered = v && (Array.isArray(v) ? v.length>0 : String(v).length>0);
+    if (answered) btn.classList.add("answered");
+    btn.addEventListener("click", () => {
+      currentIndex = i;
+      renderQuestion();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+    nav.appendChild(btn);
+  }
+}
+
+function highlightNavCurrent() {
+  const buttons = Array.from($("qNav").querySelectorAll("button"));
+  buttons.forEach((b, idx) => {
+    b.classList.toggle("current", idx === currentIndex);
+  });
+}
+
+function escapeHtml(str) {
+  return String(str ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function grade() {
+  const details = [];
+  let raw = 0;
+  let correctCount = 0;
+
+  for (const q of QUESTIONS) {
+    const user = state.answers[String(q.id)];
+    const correct = q.answer;
+
+    let isCorrect = false;
+
+    if (q.type === "multi") {
+      const u = Array.isArray(user) ? user.slice().sort().join("") : "";
+      isCorrect = (u === String(correct).split("").sort().join(""));
+    } else {
+      const u = (Array.isArray(user) ? user.join("") : (user || ""));
+      isCorrect = (u === correct);
+    }
+
+    if (isCorrect) {
+      raw += q.points;
+      correctCount += 1;
+    }
+
+    details.push({
+      id: q.id,
+      section: q.section,
+      type: q.type,
+      points: q.points,
+      question: q.question,
+      options: q.options,
+      correctAnswer: correct,
+      userAnswer: user ?? "",
+      explanation: q.explanation ?? "",
+      isCorrect
+    });
+  }
+
+  const normalized = normalizeScore(raw);
+  const pass = normalized >= PASS_LINE;
+
+  return {
+    person: state.person,
+    startedAt: state.startedAt,
+    finishedAt: new Date().toISOString(),
+    rawScore: raw,
+    rawTotal: TOTAL_POINTS,
+    score100: normalized,
+    pass,
+    correctCount,
+    totalCount: QUESTIONS.length,
+    details
+  };
+}
+
+function gradeAndShow(auto=false) {
+  // grade
+  const res = grade();
+  state.result = res;
+  state.finishedAt = res.finishedAt;
+  saveState(state);
+
+  $("quiz").classList.add("hidden");
+  $("navBar").classList.add("hidden");
+  $("result").classList.remove("hidden");
+
+  renderResult(auto);
+}
+
+function renderResult(auto) {
+  const r = state.result;
+  const name = r.person?.name || "匿名";
+  const badgeClass = r.pass ? "good" : "bad";
+  const badgeText = r.pass ? `合格（≥${PASS_LINE}）` : `不合格（<${PASS_LINE}）`;
+
+  const summary = `
+    <div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start;flex-wrap:wrap;">
+      <div>
+        <div class="muted">受试人：${escapeHtml(name)} · 完成时间：${escapeHtml(nowISO())}</div>
+        <p class="score">${r.score100}</p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">
+          <span class="badge ${badgeClass}">${badgeText}</span>
+          <span class="badge">正确题数：${r.correctCount} / ${r.totalCount}</span>
+          <span class="badge">原始得分：${r.rawScore} / ${r.rawTotal}（已标准化为100分）</span>
+        </div>
+      </div>
+      <div class="small" style="max-width:360px;">
+        <div class="hint">
+          ${
+            auto
+              ? "已到30分钟，系统已自动提交并评分。"
+              : "已提交并评分。你可以导出归档报告/数据。"
+          }
+          <div style="margin-top:6px;color:rgba(255,255,255,.75);">
+            归档文件包含：个人信息、时间戳、最终分数、每题作答、错题正确答案与解析。
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  const wrong = r.details.filter(d => !d.isCorrect);
+  const reviewHtml = wrong.length
+    ? wrong.map(d => renderReviewItem(d)).join("")
+    : `<div class="reviewItem"><div class="top"><div class="left"><div style="font-weight:700;">全部答对 ✅</div><div class="small">本次无错题。</div></div><span class="badge good">满分思路</span></div></div>`;
+
+  $("resultBox").innerHTML = summary + `<div style="margin-top:12px;"><div class="small">错题清单（只展示错题）</div>${reviewHtml}</div>`;
+}
+
+function renderReviewItem(d) {
+  const ua = formatAnswer(d.userAnswer);
+  const ca = formatAnswer(d.correctAnswer);
+  const tag = `<span class="badge bad">错题 -${d.points}分</span>`;
+  return `
+    <div class="reviewItem" id="wrong_${d.id}">
+      <div class="top">
+        <div class="left">
+          <div style="font-weight:700;">第 ${d.id} 题 · ${escapeHtml(d.section)}</div>
+          <div class="small">${escapeHtml(d.question)}</div>
+        </div>
+        ${tag}
+      </div>
+      <div class="kvs">
+        <div class="kv">
+          <div class="k">你的答案</div>
+          <div class="v">${escapeHtml(ua || "（未作答）")}</div>
+        </div>
+        <div class="kv">
+          <div class="k">正确答案</div>
+          <div class="v">${escapeHtml(ca)}</div>
+        </div>
+      </div>
+      <div class="kv" style="margin-top:8px;">
+        <div class="k">解析</div>
+        <div class="v">${escapeHtml(d.explanation || "（无解析）")}</div>
+      </div>
+    </div>
+  `;
+}
+
+function formatAnswer(ans) {
+  if (Array.isArray(ans)) return ans.join("");
+  return String(ans || "");
+}
+
+function downloadText(filename, text, mime="text/plain;charset=utf-8") {
+  const blob = new Blob([text], { type: mime });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+}
+
+function buildArchiveHtml() {
+  const r = state.result;
+  const person = r.person || {};
+  const title = "新人入职手册学习问卷｜归档报告";
+  const wrong = r.details.filter(d => !d.isCorrect);
+
+  const escape = (s) => String(s ?? "")
+    .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;").replaceAll("'","&#039;");
+
+  const rows = r.details.map(d => {
+    const ua = formatAnswer(d.userAnswer);
+    const ca = formatAnswer(d.correctAnswer);
+    return `
+      <tr>
+        <td>${d.id}</td>
+        <td>${escape(d.section)}</td>
+        <td>${escape(d.question)}</td>
+        <td>${escape(ua)}</td>
+        <td>${escape(ca)}</td>
+        <td>${d.isCorrect ? "✅" : "❌"}</td>
+        <td>${d.points}</td>
+        <td>${escape(d.explanation || "")}</td>
+      </tr>
+    `;
+  }).join("");
+
+  const html = `<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>${escape(title)}</title>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, "PingFang SC","Microsoft YaHei","Noto Sans CJK SC", Arial, sans-serif; margin: 24px; color:#111; }
+  h1 { margin: 0 0 6px; }
+  .meta { color:#555; font-size: 13px; margin-bottom: 14px; }
+  .box { border:1px solid #ddd; padding: 12px; border-radius: 10px; margin: 12px 0; }
+  .score { font-size: 40px; font-weight: 800; margin: 0; }
+  .bad { color:#b00020; }
+  .good { color:#0a7f5b; }
+  table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 13px; }
+  th, td { border:1px solid #ddd; padding: 8px; vertical-align: top; }
+  th { background:#f5f5f5; text-align: left; }
+  .small { font-size: 12px; color:#555; }
+</style>
+</head>
+<body>
+  <h1>${escape(title)}</h1>
+  <div class="meta">生成时间：${escape(nowISO())} · 标准化100分 · 合格线≥${PASS_LINE}</div>
+
+  <div class="box">
+    <div class="small">受试人信息</div>
+    <div>姓名：${escape(person.name || "")}</div>
+    <div>邮箱/飞书：${escape(person.email || "")}</div>
+    <div>部门/项目：${escape(person.dept || "")}</div>
+    <div>工号：${escape(person.eid || "")}</div>
+  </div>
+
+  <div class="box">
+    <div class="small">成绩</div>
+    <p class="score">${r.score100}</p>
+    <div>结果：<strong class="${r.pass ? "good" : "bad"}">${r.pass ? "合格" : "不合格"}</strong></div>
+    <div>正确题数：${r.correctCount} / ${r.totalCount}</div>
+    <div>原始得分：${r.rawScore} / ${r.rawTotal}（已标准化）</div>
+    <div>开始时间：${escape(new Date(r.startedAt).toLocaleString())}</div>
+    <div>提交时间：${escape(new Date(r.finishedAt).toLocaleString())}</div>
+  </div>
+
+  <div class="box">
+    <div class="small">全题作答明细（含解析）</div>
+    <table>
+      <thead>
+        <tr>
+          <th>题号</th>
+          <th>模块</th>
+          <th>题目</th>
+          <th>你的答案</th>
+          <th>正确答案</th>
+          <th>对错</th>
+          <th>分值</th>
+          <th>解析</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${rows}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="small">提示：你可以在浏览器里直接“打印/另存为PDF”以便进一步归档。</div>
+</body>
+</html>`;
+  return html;
+}
+
+function buildSummaryText() {
+  const r = state.result;
+  const p = r.person || {};
+  return [
+    `新人入职手册学习问卷｜答题结果`,
+    `姓名：${p.name || ""}  部门：${p.dept || ""}  工号：${p.eid || ""}`,
+    `完成时间：${nowISO()}`,
+    `分数（标准化100）：${r.score100}  结果：${r.pass ? "合格" : "不合格"}`,
+    `正确题数：${r.correctCount}/${r.totalCount}  原始得分：${r.rawScore}/${r.rawTotal}`,
+  ].join("\n");
+}
+
+$("startBtn").addEventListener("click", () => {
+  currentIndex = 0;
+  startQuiz(false);
+});
+
+$("resumeBtn").addEventListener("click", () => {
+  const loaded = loadState();
+  if (!loaded) return;
+  state = loaded;
+  // find first unanswered as current
+  let idx = 0;
+  for (let i=0;i<QUESTIONS.length;i++) {
+    const v = state.answers[String(QUESTIONS[i].id)];
+    const answered = v && (Array.isArray(v) ? v.length>0 : String(v).length>0);
+    if (!answered) { idx = i; break; }
+    idx = i;
+  }
+  currentIndex = idx;
+  startQuiz(true);
+});
+
+$("resetBtn").addEventListener("click", () => {
+  if (confirm("确定清空本机草稿吗？（不会影响已导出的归档文件）")) {
+    clearState();
+    location.reload();
+  }
+});
+
+$("prevBtn").addEventListener("click", () => {
+  if (currentIndex > 0) {
+    currentIndex -= 1;
+    renderQuestion();
+  }
+});
+
+$("nextBtn").addEventListener("click", () => {
+  if (currentIndex < QUESTIONS.length - 1) {
+    currentIndex += 1;
+    renderQuestion();
+  }
+});
+
+$("saveBtn").addEventListener("click", () => {
+  state.person = {
+    name: $("name").value.trim(),
+    email: $("email").value.trim(),
+    dept: $("dept").value.trim(),
+    eid: $("eid").value.trim(),
+  };
+  saveState(state);
+  alert("已保存草稿（本机）。");
+});
+
+$("submitBtn").addEventListener("click", () => {
+  const unanswered = QUESTIONS.filter(q => {
+    const v = state.answers[String(q.id)];
+    return !(v && (Array.isArray(v) ? v.length>0 : String(v).length>0));
+  });
+  const msg = unanswered.length
+    ? `还有 ${unanswered.length} 题未作答（例如：${unanswered.slice(0,5).map(q=>q.id).join(",")}）。仍要提交并评分吗？`
+    : "确认提交并评分吗？提交后将展示错题解析并可导出归档。";
+  if (!confirm(msg)) return;
+  gradeAndShow(false);
+});
+
+$("downloadHtmlBtn").addEventListener("click", () => {
+  const r = state.result;
+  const fname = `新人入职手册学习问卷_归档报告_${safeFilePart(r.person?.name)}_${new Date().toISOString().slice(0,19).replaceAll(":","")}.html`;
+  const html = buildArchiveHtml();
+  downloadText(fname, html, "text/html;charset=utf-8");
+});
+
+$("downloadJsonBtn").addEventListener("click", () => {
+  const r = state.result;
+  const fname = `新人入职手册学习问卷_归档数据_${safeFilePart(r.person?.name)}_${new Date().toISOString().slice(0,19).replaceAll(":","")}.json`;
+  downloadText(fname, JSON.stringify(r, null, 2), "application/json;charset=utf-8");
+});
+
+$("copySummaryBtn").addEventListener("click", async () => {
+  try {
+    await navigator.clipboard.writeText(buildSummaryText());
+    alert("已复制到剪贴板。");
+  } catch (e) {
+    // fallback
+    const ta = document.createElement("textarea");
+    ta.value = buildSummaryText();
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand("copy");
+    ta.remove();
+    alert("已复制到剪贴板。");
+  }
+});
+
+$("redoBtn").addEventListener("click", () => {
+  if (!confirm("确定重新开始？这会清空本机当前答题记录。")) return;
+  clearState();
+  location.reload();
+});
+
+// If already finished, show result directly
+const loaded = loadState();
+if (loaded && loaded.finishedAt && loaded.result) {
+  state = loaded;
+  $("leftCard").classList.add("hidden");
+  $("quiz").classList.add("hidden");
+  $("navBar").classList.add("hidden");
+  $("result").classList.remove("hidden");
+  renderResult(false);
+}
+</script>
+</body>
+</html>
